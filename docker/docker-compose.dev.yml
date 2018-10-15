@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  nginx:
+    build:
+      context: ..
+      dockerfile: ./docker/builds/nginx/Dockerfile
+    networks:
+      - default
+      - traefik_webgateway
+    volumes:
+      - ..:/code:delegated
+    labels:
+      traefik.enable: 'true'
+      traefik.frontend.rule: 'Host:scratch.loc'
+      traefik.frontend.passHostHeader: 'true'
+  php:
+    build:
+      context: ..
+      dockerfile: ./docker/builds/php/Dockerfile
+      target: stage_dev
+    volumes:
+      - ..:/code:delegated
+      
+networks:
+  traefik_webgateway:
+    external: true
